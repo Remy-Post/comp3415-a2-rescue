@@ -2,6 +2,17 @@
 
 from supplydesk.storage import JsonStore
 
+CUSTOMER_TYPES = ("regular", "student")
+FULFILLMENT_OPTIONS = ("pickup", "delivery")
+MIN_QUANTITY = 1
+MAX_QUANTITY = 99
+STUDENT_DISCOUNT_THRESHOLD_CENTS = 5000   # $50.00
+STUDENT_DISCOUNT_PERCENT = 10
+DELIVERY_FEE_CENTS = 600                  # $6.00
+FREE_DELIVERY_THRESHOLD_CENTS = 10000     # $100.00, after discount
+ORDER_ID_PREFIX = "ORD-"
+ORDER_NUMBER_DIGITS = 4
+
 
 class OrderService:
     def __init__(self, state_path=".supplydesk/state.json"):
@@ -18,7 +29,7 @@ class OrderService:
         state = self.store.load()
         priced = self._price_request(state, customer_type, items, fulfillment)
         order = {
-            "order_id": "ORD-" + str(state["next_order_number"]).zfill(4),
+            "order_id": _format_order_id(state["next_order_number"]),
             "status": "placed",
             **priced,
         }
@@ -66,9 +77,9 @@ class OrderService:
 
 
 def _validate_options(customer_type, fulfillment, items):
-    if customer_type not in ("regular", "student"):
+    if customer_type not in CUSTOMER_TYPES:
         raise ValueError("Customer type must be regular or student.")
-    if fulfillment not in ("pickup", "delivery"):
+    if fulfillment not in FULFILLMENT_OPTIONS:
         raise ValueError("Fulfillment must be pickup or delivery.")
     if not isinstance(items, list) or not items:
         raise ValueError("An order must contain at least one item.")
@@ -82,8 +93,8 @@ def _price_line(catalog, item):
     if product is None:
         raise ValueError("Unknown product.")
     quantity = item.get("quantity")
-    if type(quantity) is not int or quantity < 1 or quantity > 99:
-        raise ValueError("Quantity must be an integer from 1 to 99.")
+    if type(quantity) is not int or not MIN_QUANTITY <= quantity <= MAX_QUANTITY:
+        raise ValueError(f"Quantity must be an integer from {MIN_QUANTITY} to {MAX_QUANTITY}.")
     if quantity > product["stock"]:
         raise ValueError("Not enough stock for " + product["product_id"] + ".")
     return {
@@ -96,15 +107,20 @@ def _price_line(catalog, item):
 
 
 def _discount_for(customer_type, subtotal):
-    if customer_type == "student" and subtotal > 5000:
-        return (subtotal * 10 + 50) // 100
+    if customer_type == "student" and subtotal > STUDENT_DISCOUNT_THRESHOLD_CENTS:
+        # integer maths: adding 50 before // 100 rounds half a cent up
+        return (subtotal * STUDENT_DISCOUNT_PERCENT + 50) // 100
     return 0
 
 
 def _delivery_for(fulfillment, discounted_subtotal):
-    if fulfillment == "delivery" and discounted_subtotal < 10000:
-        return 600
+    if fulfillment == "delivery" and discounted_subtotal < FREE_DELIVERY_THRESHOLD_CENTS:
+        return DELIVERY_FEE_CENTS
     return 0
+
+
+def _format_order_id(number):
+    return ORDER_ID_PREFIX + str(number).zfill(ORDER_NUMBER_DIGITS)
 
 
 def _find_product(catalog, product_id):
