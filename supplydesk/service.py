@@ -49,6 +49,8 @@ class OrderService:
     def cancel_order(self, order_id):
         state = self.store.load()
         order = _find_order(state["orders"], order_id)
+        if order["status"] == "cancelled":
+            return order  # already cancelled: don't give the stock back twice
         for line in order["items"]:
             product = _find_product(state["catalog"], line["product_id"])
             if product is not None:
