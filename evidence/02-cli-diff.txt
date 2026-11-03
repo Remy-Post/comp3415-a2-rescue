@@ -1,0 +1,2 @@
+$ sh tools/cli_snapshot.sh > after.txt && diff evidence/cli-original.txt after.txt   (commit 9d38113)
+(no differences)
