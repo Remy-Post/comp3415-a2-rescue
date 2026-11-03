@@ -1,0 +1,10 @@
+$ diff evidence/cli-original.txt after.txt   (commit e726417)
+# Only expected change: student bag:2 quote (subtotal exactly 5000) now gets the 500 discount.
+72c72
+<   "discount_cents": 0,
+---
+>   "discount_cents": 500,
+74c74
+<   "total_cents": 5000
+---
+>   "total_cents": 4500
