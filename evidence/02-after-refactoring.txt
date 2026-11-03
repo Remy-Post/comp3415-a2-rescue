@@ -40,7 +40,7 @@ test_student_delivery_quote (test_smoke.OrderSmokeTests.test_student_delivery_qu
 FAIL: test_student_discount_applies_at_exactly_5000 (test_service.BoundaryTests.test_student_discount_applies_at_exactly_5000)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/claude/work/tests/test_service.py", line 88, in test_student_discount_applies_at_exactly_5000
+  File "tests/test_service.py", line 88, in test_student_discount_applies_at_exactly_5000
     self.assertEqual(quote["discount_cents"], 500)
     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 AssertionError: 0 != 500
@@ -49,7 +49,7 @@ AssertionError: 0 != 500
 FAIL: test_duplicate_lines_cannot_exceed_combined_stock (test_service.InvalidInputTests.test_duplicate_lines_cannot_exceed_combined_stock)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/claude/work/tests/test_service.py", line 174, in test_duplicate_lines_cannot_exceed_combined_stock
+  File "tests/test_service.py", line 174, in test_duplicate_lines_cannot_exceed_combined_stock
     with self.assertRaises(ValueError):
          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
 AssertionError: ValueError not raised
@@ -58,7 +58,7 @@ AssertionError: ValueError not raised
 FAIL: test_cancelling_twice_does_not_restore_stock_again (test_service.PreservedBehaviourTests.test_cancelling_twice_does_not_restore_stock_again)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/home/claude/work/tests/test_service.py", line 236, in test_cancelling_twice_does_not_restore_stock_again
+  File "tests/test_service.py", line 236, in test_cancelling_twice_does_not_restore_stock_again
     self.assertEqual(stock_of(self.service, "mug"), 8)
     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 AssertionError: 10 != 8

@@ -1,5 +1,10 @@
 # Campus Supply Desk
 
+> **COMP 3415 A2 – Software Rescue Mission (Remy Post).** This fork adds a test
+> safety net, three behaviour-preserving refactorings, and three separate
+> defect fixes. See [A2 work in this repository](#a2-work-in-this-repository)
+> at the bottom, and [AI_LOG.md](AI_LOG.md) for the AI-use record.
+
 This program is intentionally imperfect. Your assignment is to understand, test, and improve it—not to rewrite it.
 
 **Before using generative AI, submit Checkpoint A as required by the assignment.**
@@ -214,3 +219,46 @@ These commands use the same orders and stock as the interactive menu opened with
 python -m supplydesk --help
 python -m supplydesk quote --help
 ```
+
+## A2 work in this repository
+
+### Running the tests
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+The suite now has 36 tests (4 starter + 32 added) and all of them pass on the
+final commit. Python 3.10+ and no extra packages, same as before.
+
+| File | What it covers |
+|------|----------------|
+| `tests/test_smoke.py` | Original starter tests (unchanged) |
+| `tests/test_service.py` | `OrderService`, grouped into `NormalBehaviourTests`, `BoundaryTests`, `InvalidInputTests`, `PreservedBehaviourTests` |
+| `tests/test_interfaces.py` | Individual commands (`cli.main`) and the interactive menu (`input()` patched) |
+
+### Checking that CLI output didn't change
+
+`tools/cli_snapshot.sh` runs a fixed list of commands on a fresh save file and
+prints every result and exit status:
+
+```sh
+sh tools/cli_snapshot.sh > after.txt
+diff evidence/cli-original.txt after.txt
+```
+
+`evidence/cli-original.txt` was produced from the untouched starter commit.
+
+### Test evidence
+
+| File | Commit state | Result |
+|------|--------------|--------|
+| `evidence/01-baseline.txt` | Starter code + new tests | 33 pass, 3 fail (known defects) |
+| `evidence/02-after-refactoring.txt`, `02-cli-diff.txt` | After 3 refactorings | Same 3 fail, CLI output identical |
+| `evidence/03-after-defect-fixes.txt`, `03-cli-diff.txt` | After 3 defect fixes | 36/36 pass, one expected CLI change |
+| `evidence/screenshots/` | Images of the logs above (for the report) | |
+
+### Commit history
+
+baseline → tests → refactoring (3 commits) → defect fixes (3 commits) → CR-01 (when released).
+
