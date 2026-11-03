@@ -62,6 +62,7 @@ class OrderService:
         so both always use the same rules. Does not change state."""
         _validate_options(customer_type, fulfillment, items)
         lines = [_price_line(state["catalog"], item) for item in items]
+        _check_combined_stock(state["catalog"], lines)
         subtotal = sum(line["line_total_cents"] for line in lines)
         discount = _discount_for(customer_type, subtotal)
         delivery = _delivery_for(fulfillment, subtotal - discount)
@@ -104,6 +105,16 @@ def _price_line(catalog, item):
         "quantity": quantity,
         "line_total_cents": product["unit_price_cents"] * quantity,
     }
+
+
+def _check_combined_stock(catalog, lines):
+    """The same product can be on several lines, so check the total."""
+    requested = {}
+    for line in lines:
+        requested[line["product_id"]] = requested.get(line["product_id"], 0) + line["quantity"]
+    for product_id, quantity in requested.items():
+        if quantity > _find_product(catalog, product_id)["stock"]:
+            raise ValueError("Not enough stock for " + product_id + ".")
 
 
 def _discount_for(customer_type, subtotal):
