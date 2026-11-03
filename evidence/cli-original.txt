@@ -1,0 +1,396 @@
+$ supplydesk quote --customer regular --item notebook:2
+{
+  "customer_type": "regular",
+  "fulfillment": "pickup",
+  "items": [
+    {
+      "product_id": "notebook",
+      "name": "Notebook",
+      "unit_price_cents": 500,
+      "quantity": 2,
+      "line_total_cents": 1000
+    }
+  ],
+  "subtotal_cents": 1000,
+  "discount_cents": 0,
+  "delivery_cents": 0,
+  "total_cents": 1000
+}
+[exit 0]
+$ supplydesk quote --customer student --fulfillment delivery --item hoodie:2
+{
+  "customer_type": "student",
+  "fulfillment": "delivery",
+  "items": [
+    {
+      "product_id": "hoodie",
+      "name": "Campus hoodie",
+      "unit_price_cents": 4000,
+      "quantity": 2,
+      "line_total_cents": 8000
+    }
+  ],
+  "subtotal_cents": 8000,
+  "discount_cents": 800,
+  "delivery_cents": 600,
+  "total_cents": 7800
+}
+[exit 0]
+$ supplydesk quote --customer regular --fulfillment delivery --item hoodie:3
+{
+  "customer_type": "regular",
+  "fulfillment": "delivery",
+  "items": [
+    {
+      "product_id": "hoodie",
+      "name": "Campus hoodie",
+      "unit_price_cents": 4000,
+      "quantity": 3,
+      "line_total_cents": 12000
+    }
+  ],
+  "subtotal_cents": 12000,
+  "discount_cents": 0,
+  "delivery_cents": 0,
+  "total_cents": 12000
+}
+[exit 0]
+$ supplydesk quote --customer student --item bag:2
+{
+  "customer_type": "student",
+  "fulfillment": "pickup",
+  "items": [
+    {
+      "product_id": "bag",
+      "name": "Canvas bag",
+      "unit_price_cents": 2500,
+      "quantity": 2,
+      "line_total_cents": 5000
+    }
+  ],
+  "subtotal_cents": 5000,
+  "discount_cents": 0,
+  "delivery_cents": 0,
+  "total_cents": 5000
+}
+[exit 0]
+$ supplydesk quote --customer student --fulfillment delivery --item hoodie:2 --item bag:1 --item notebook:1
+{
+  "customer_type": "student",
+  "fulfillment": "delivery",
+  "items": [
+    {
+      "product_id": "hoodie",
+      "name": "Campus hoodie",
+      "unit_price_cents": 4000,
+      "quantity": 2,
+      "line_total_cents": 8000
+    },
+    {
+      "product_id": "bag",
+      "name": "Canvas bag",
+      "unit_price_cents": 2500,
+      "quantity": 1,
+      "line_total_cents": 2500
+    },
+    {
+      "product_id": "notebook",
+      "name": "Notebook",
+      "unit_price_cents": 500,
+      "quantity": 1,
+      "line_total_cents": 500
+    }
+  ],
+  "subtotal_cents": 11000,
+  "discount_cents": 1100,
+  "delivery_cents": 600,
+  "total_cents": 10500
+}
+[exit 0]
+$ supplydesk quote --item laptop:1
+Error: Unknown product.
+[exit 2]
+$ supplydesk quote --item notebook:0
+Error: Quantity must be an integer from 1 to 99.
+[exit 2]
+$ supplydesk quote --item notebook:abc
+usage: __main__.py quote [-h] [--customer {regular,student}]
+                         [--fulfillment {pickup,delivery}] --item ITEM
+__main__.py quote: error: argument --item: Item quantity must be an integer.
+[exit 2]
+$ supplydesk place --customer student --item hoodie:1 --item mug:2
+{
+  "order_id": "ORD-0001",
+  "status": "placed",
+  "customer_type": "student",
+  "fulfillment": "pickup",
+  "items": [
+    {
+      "product_id": "hoodie",
+      "name": "Campus hoodie",
+      "unit_price_cents": 4000,
+      "quantity": 1,
+      "line_total_cents": 4000
+    },
+    {
+      "product_id": "mug",
+      "name": "Campus mug",
+      "unit_price_cents": 1500,
+      "quantity": 2,
+      "line_total_cents": 3000
+    }
+  ],
+  "subtotal_cents": 7000,
+  "discount_cents": 700,
+  "delivery_cents": 0,
+  "total_cents": 6300
+}
+[exit 0]
+$ supplydesk place --item bag:9
+Error: Not enough stock for bag.
+[exit 2]
+$ supplydesk place --item pen-pack:3 --fulfillment delivery
+{
+  "order_id": "ORD-0002",
+  "status": "placed",
+  "customer_type": "regular",
+  "fulfillment": "delivery",
+  "items": [
+    {
+      "product_id": "pen-pack",
+      "name": "Pen pack",
+      "unit_price_cents": 750,
+      "quantity": 3,
+      "line_total_cents": 2250
+    }
+  ],
+  "subtotal_cents": 2250,
+  "discount_cents": 0,
+  "delivery_cents": 600,
+  "total_cents": 2850
+}
+[exit 0]
+$ supplydesk orders
+[
+  {
+    "order_id": "ORD-0001",
+    "status": "placed",
+    "customer_type": "student",
+    "fulfillment": "pickup",
+    "items": [
+      {
+        "product_id": "hoodie",
+        "name": "Campus hoodie",
+        "unit_price_cents": 4000,
+        "quantity": 1,
+        "line_total_cents": 4000
+      },
+      {
+        "product_id": "mug",
+        "name": "Campus mug",
+        "unit_price_cents": 1500,
+        "quantity": 2,
+        "line_total_cents": 3000
+      }
+    ],
+    "subtotal_cents": 7000,
+    "discount_cents": 700,
+    "delivery_cents": 0,
+    "total_cents": 6300
+  },
+  {
+    "order_id": "ORD-0002",
+    "status": "placed",
+    "customer_type": "regular",
+    "fulfillment": "delivery",
+    "items": [
+      {
+        "product_id": "pen-pack",
+        "name": "Pen pack",
+        "unit_price_cents": 750,
+        "quantity": 3,
+        "line_total_cents": 2250
+      }
+    ],
+    "subtotal_cents": 2250,
+    "discount_cents": 0,
+    "delivery_cents": 600,
+    "total_cents": 2850
+  }
+]
+[exit 0]
+$ supplydesk show ORD-0002
+{
+  "order_id": "ORD-0002",
+  "status": "placed",
+  "customer_type": "regular",
+  "fulfillment": "delivery",
+  "items": [
+    {
+      "product_id": "pen-pack",
+      "name": "Pen pack",
+      "unit_price_cents": 750,
+      "quantity": 3,
+      "line_total_cents": 2250
+    }
+  ],
+  "subtotal_cents": 2250,
+  "discount_cents": 0,
+  "delivery_cents": 600,
+  "total_cents": 2850
+}
+[exit 0]
+$ supplydesk show ORD-0404
+Error: Unknown order: ORD-0404
+[exit 2]
+$ supplydesk cancel ORD-0001
+{
+  "order_id": "ORD-0001",
+  "status": "cancelled",
+  "customer_type": "student",
+  "fulfillment": "pickup",
+  "items": [
+    {
+      "product_id": "hoodie",
+      "name": "Campus hoodie",
+      "unit_price_cents": 4000,
+      "quantity": 1,
+      "line_total_cents": 4000
+    },
+    {
+      "product_id": "mug",
+      "name": "Campus mug",
+      "unit_price_cents": 1500,
+      "quantity": 2,
+      "line_total_cents": 3000
+    }
+  ],
+  "subtotal_cents": 7000,
+  "discount_cents": 700,
+  "delivery_cents": 0,
+  "total_cents": 6300
+}
+[exit 0]
+$ supplydesk catalog
+[
+  {
+    "product_id": "notebook",
+    "name": "Notebook",
+    "unit_price_cents": 500,
+    "stock": 20
+  },
+  {
+    "product_id": "pen-pack",
+    "name": "Pen pack",
+    "unit_price_cents": 750,
+    "stock": 7
+  },
+  {
+    "product_id": "hoodie",
+    "name": "Campus hoodie",
+    "unit_price_cents": 4000,
+    "stock": 5
+  },
+  {
+    "product_id": "mug",
+    "name": "Campus mug",
+    "unit_price_cents": 1500,
+    "stock": 8
+  },
+  {
+    "product_id": "bag",
+    "name": "Canvas bag",
+    "unit_price_cents": 2500,
+    "stock": 4
+  }
+]
+[exit 0]
+$ supplydesk place --item mug:1
+{
+  "order_id": "ORD-0003",
+  "status": "placed",
+  "customer_type": "regular",
+  "fulfillment": "pickup",
+  "items": [
+    {
+      "product_id": "mug",
+      "name": "Campus mug",
+      "unit_price_cents": 1500,
+      "quantity": 1,
+      "line_total_cents": 1500
+    }
+  ],
+  "subtotal_cents": 1500,
+  "discount_cents": 0,
+  "delivery_cents": 0,
+  "total_cents": 1500
+}
+[exit 0]
+$ supplydesk orders
+[
+  {
+    "order_id": "ORD-0001",
+    "status": "cancelled",
+    "customer_type": "student",
+    "fulfillment": "pickup",
+    "items": [
+      {
+        "product_id": "hoodie",
+        "name": "Campus hoodie",
+        "unit_price_cents": 4000,
+        "quantity": 1,
+        "line_total_cents": 4000
+      },
+      {
+        "product_id": "mug",
+        "name": "Campus mug",
+        "unit_price_cents": 1500,
+        "quantity": 2,
+        "line_total_cents": 3000
+      }
+    ],
+    "subtotal_cents": 7000,
+    "discount_cents": 700,
+    "delivery_cents": 0,
+    "total_cents": 6300
+  },
+  {
+    "order_id": "ORD-0002",
+    "status": "placed",
+    "customer_type": "regular",
+    "fulfillment": "delivery",
+    "items": [
+      {
+        "product_id": "pen-pack",
+        "name": "Pen pack",
+        "unit_price_cents": 750,
+        "quantity": 3,
+        "line_total_cents": 2250
+      }
+    ],
+    "subtotal_cents": 2250,
+    "discount_cents": 0,
+    "delivery_cents": 600,
+    "total_cents": 2850
+  },
+  {
+    "order_id": "ORD-0003",
+    "status": "placed",
+    "customer_type": "regular",
+    "fulfillment": "pickup",
+    "items": [
+      {
+        "product_id": "mug",
+        "name": "Campus mug",
+        "unit_price_cents": 1500,
+        "quantity": 1,
+        "line_total_cents": 1500
+      }
+    ],
+    "subtotal_cents": 1500,
+    "discount_cents": 0,
+    "delivery_cents": 0,
+    "total_cents": 1500
+  }
+]
+[exit 0]
