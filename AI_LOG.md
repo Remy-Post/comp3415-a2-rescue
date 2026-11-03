@@ -23,7 +23,7 @@ Full conversation (shared link): _add link here_
 
 **Decision:** ACCEPT
 
-**Why:** The two methods were ~45 identical lines. The spec says quotes and orders must price identically, and with two copies a future change could easily update only one of them.
+**Why:** The two methods shared 39 identical lines (14–52 vs 64–102). The spec says quotes and orders must price identically, and with two copies a future change could easily update only one of them.
 
 **Evidence:** Commit `2b8441a`. Test results identical to baseline (`evidence/01-baseline.txt` vs `evidence/02-after-refactoring.txt`), `PreservedBehaviourTests.test_quote_matches_placed_order` passes, CLI snapshot diff empty (`evidence/02-cli-diff.txt`).
 
