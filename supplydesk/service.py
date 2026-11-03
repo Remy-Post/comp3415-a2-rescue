@@ -107,7 +107,7 @@ def _price_line(catalog, item):
 
 
 def _discount_for(customer_type, subtotal):
-    if customer_type == "student" and subtotal > STUDENT_DISCOUNT_THRESHOLD_CENTS:
+    if customer_type == "student" and subtotal >= STUDENT_DISCOUNT_THRESHOLD_CENTS:
         # integer maths: adding 50 before // 100 rounds half a cent up
         return (subtotal * STUDENT_DISCOUNT_PERCENT + 50) // 100
     return 0
